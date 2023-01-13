@@ -4,6 +4,7 @@ import 'package:youth/signin.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:flutter/cupertino.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -50,7 +51,7 @@ class _HomeScreen extends State<HomeScreen> {
       ),
       body: SingleChildScrollView(
           child: Container(
-            height: MediaQuery.of(context).size.height-50,
+        height: MediaQuery.of(context).size.height - 50,
         child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance.collection('posts').snapshots(),
           builder: (context, snapshot) {
@@ -62,6 +63,50 @@ class _HomeScreen extends State<HomeScreen> {
                   DocumentSnapshot data = snapshot.data!.docs[index];
                   return Card(
                     child: ListTile(
+                      onTap: () {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: const Radius.circular(20.0),
+                                      topRight: const Radius.circular(20.0)),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      SizedBox(height: 16),
+                                      Text(
+                                        data['title'],
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 24),
+                                      ),
+                                      SizedBox(height: 8),
+                                      Text(data['type']),
+                                      SizedBox(height: 8),
+                                      Text(data['description']),
+                                      SizedBox(height: 16),
+                                      InkWell(
+                                        child: Text("Close",
+                                            style: TextStyle(      
+                                                color: Colors.blue,
+                                                decoration:
+                                                    TextDecoration.underline)),
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            });
+                      },
                       title: Text(data['title']),
                       subtitle: Text(data['type']),
                     ),
