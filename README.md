@@ -1,16 +1,25 @@
-# youth
 
-A new Flutter project.
 
-## Getting Started
+## A Flutter project - Youth Opportunities.
 
-This project is a starting point for a Flutter application.
+1. You need to have Git and Flutter installed on their computer. You can install Git by following the instructions on the official Git website, and you can install Flutter by following the instructions on the official Flutter website.
 
-A few resources to get you started if this is your first Flutter project:
+2. You should open a terminal or command prompt on their computer and navigate to the directory where you want to clone the repository.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+3. You can use the command git clone <repository-url> to clone the repository. Replace <repository-url> with the URL of this repository 
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```sh
+gh repo clone sratul35/Flutter_YouthOpp
+```
+
+4. Once the cloning process is complete, you can navigate into the cloned repository directory by using the command cd <repository-name>
+
+5. You can run the command flutter packages get to install the dependencies required by the project.
+
+6. You should connect an Android or iOS device or launch an emulator.
+
+7. To run the app on the device you can run the command flutter run in the terminal.
+
+8. After a few seconds, the app should launch on the device or emulator.
+
+# Please note that, before running the app the user should have the android sdk and xcode installed in their system based on the platform they are trying to run.
