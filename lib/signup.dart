@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'SignInScreen.dart';
+import 'signin.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -19,6 +20,26 @@ class _SignUpScreen extends State<SignUpScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  showAlert({required String text}) async {
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Sign Up'),
+          content: Text('$text'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -68,24 +89,20 @@ class _SignUpScreen extends State<SignUpScreen> {
                     final name = _nameController.text;
                     final email = _emailController.text;
                     final password = _passwordController.text;
-                    await showDialog<void>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Sign Up'),
-                          content: Text(
-                              'Successfully signed up with $name, $email, and $password'),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
+
+                    if (name.isEmpty || email.isEmpty || password.isEmpty) {
+                      showAlert(text: 'Please fill all the fields');
+                    }else{
+                      try{
+                        final user = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+                        if(user != null){
+                          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const SignInScreen()));
+                        }
+                      }catch(e){
+                        showAlert(text: e.toString());
+                      }
+                    }
+
                   },
                   child: const Text(
                     'Sign Up',
@@ -99,22 +116,20 @@ class _SignUpScreen extends State<SignUpScreen> {
                   height: 20,
                   width: 20,
                 ),
-                TextButton(
+                ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const SignInScreen()),
+                        builder: (context) => const SignInScreen(),
+                      ),
                     );
                   },
-                  child: const Text(
-                    'Already have an account? Sign In',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      backgroundColor: Colors.white,
-                      color: Colors.blueAccent,
-                    ),
+                  child: const Text("Already have an account? Sign In",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color:Colors.white
+                      )
                   ),
                 ),
               ],
