@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'SignUpScreen.dart';
+import 'signup.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'home.dart';
+
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -19,13 +22,33 @@ class _SignInScreen extends State<SignInScreen> {
     super.dispose();
   }
 
+  showAlert({required String text}) async{
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Sign In'),
+          content: Text(
+              '$text'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Card(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           elevation: 8,
           margin: EdgeInsets.all(20),
           child: Container(
@@ -56,24 +79,20 @@ class _SignInScreen extends State<SignInScreen> {
                   onPressed: () async {
                     final email = _emailController.text;
                     final password = _passwordController.text;
-                    await showDialog<void>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Sign In'),
-                          content: Text(
-                              'Successfully signed in with $email and $password'),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
+                    try{
+                      await FirebaseAuth.instance.signInWithEmailAndPassword(
+                          email: email,
+                          password: password
+                      );
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomeScreen()));
+                    } on FirebaseAuthException catch (e) {
+                      if (e.code == 'user-not-found') {
+                        showAlert(text: 'No user found for that email.');
+                      } else if (e.code == 'wrong-password') {
+                        showAlert(text: 'Wrong password provided for that user.');
+                      }
+                    }
+         
                   },
                   child: const Text(
                     'Sign In',
@@ -83,10 +102,7 @@ class _SignInScreen extends State<SignInScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 20,
-                  width: 15,
-                ),
+                const SizedBox(height: 20, width: 15,),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
@@ -98,7 +114,10 @@ class _SignInScreen extends State<SignInScreen> {
                   },
                   child: const Text("Don't have an account? Sign Up",
                       style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.white)),
+                          fontWeight: FontWeight.bold,
+                          color:Colors.white
+                      )
+                  ),
                 ),
               ],
             ),
