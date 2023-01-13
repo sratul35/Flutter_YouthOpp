@@ -22,5 +22,5 @@ gh repo clone sratul35/Flutter_YouthOpp
 
 8. After a few seconds, the app should launch on the device or emulator.
 
-## Please note that, before running the app you should have the android sdk and xcode installed in your system based on the platform they are trying to run.
+## Please note that, before running the app you should have the android sdk and xcode installed in your system based on the platform you are trying to run.
 
